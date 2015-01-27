@@ -31,13 +31,17 @@ $table = $installer->getConnection()
         ->addColumn('valid', Varien_Db_Ddl_Table::TYPE_BOOLEAN, null, array(
             'nullable' => false,
                 ), 'Is Valid')
+        ->addColumn('created_at', Varien_Db_Ddl_Table::TYPE_DATETIME, null, array(
+            'nullable' => false,
+                ), 'Created_at')
         ->addIndex(
-        $installer->getIdxName($tableName, array('country_code', 'vat_no'), 
-                Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE), array('country_code', 'vat_no'), 
+                $installer->getIdxName($tableName,
+                    array('country_code', 'vat_no'),
+                    Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE)
+                ,
+                array('country_code', 'vat_no'),
                 array('type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE)
-    );
-
-
+        );
 
 $installer->getConnection()->createTable($table);
 $installer->endSetup();

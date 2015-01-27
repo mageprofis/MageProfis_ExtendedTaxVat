@@ -18,44 +18,54 @@
                         <table>extended_taxvat</table>
                     </taxvat>
                 </entities>
-            </extendedtaxvat_resource>	
+            </extendedtaxvat_resource>
+            <!--
             <checkout>
                 <rewrite>
                     <type_onepage>MageProfis_ExtendedTaxvat_Model_Type_Onepage</type_onepage>
                 </rewrite>
             </checkout>
+            -->
         </models>
         <helpers>
-             <extendedtaxvat>
+            <extendedtaxvat>
                 <class>MageProfis_ExtendedTaxvat_Helper</class>
             </extendedtaxvat>
         </helpers>
         <events>
             <controller_action_predispatch_checkout_onepage_saveBilling>
                 <observers>
-                    <checkout_taxvat>
+                    <extendedtaxvat>
                         <type>singleton</type>
                         <class>extendedtaxvat/observer</class>
                         <method>setQuoteAndSessionInCheckout</method>
-                    </checkout_taxvat>
+                    </extendedtaxvat>
                 </observers>
             </controller_action_predispatch_checkout_onepage_saveBilling>
             <customer_save_before>
                 <observers>
-                    <customer_taxvat_before>
+                    <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>onCustomerSaveBefore</method>
-                    </customer_taxvat_before>    
+                    </extendedtaxvat>    
                 </observers>
             </customer_save_before>
             <customer_save_after>
                 <observers>
-                    <customer_taxvat_after>
+                    <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>onCustomerSaveAfter</method>
-                    </customer_taxvat_after>    
+                    </extendedtaxvat>    
                 </observers>
             </customer_save_after>
+            <core_copy_fieldset_customer_account_to_quote>
+                <observers>
+                    <extendedtaxvat>
+                        <class>extendedtaxvat/observer</class>
+                        <method>copyFieldsetCustomerAccountToQuote</method>
+                    </extendedtaxvat>    
+                </observers>
+            </core_copy_fieldset_customer_account_to_quote>
         </events>
         <resources>
             <mageprofis_taxvat_setup>
@@ -65,6 +75,15 @@
                 </setup>
             </mageprofis_taxvat_setup>
         </resources>
+        <template>
+            <email>
+                <taxvatvalidation_email_template translate="label" module="extendedtaxvat">
+                    <label>Taxvat Validation E-Mail</label>
+                    <file>extendedtaxvat.html</file>
+                    <type>html</type>
+                </taxvatvalidation_email_template>
+            </email>
+        </template>
     </global>
     <frontend>
         <translate>
@@ -77,4 +96,37 @@
             </modules>
         </translate>
     </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <extendedtaxvat>
+                    <files>
+                        <default>MageProfis_ExtendedTaxVat.csv</default>
+                    </files>
+                </extendedtaxvat>
+            </modules>
+        </translate>
+    </adminhtml>
+    <default>
+        <mageprofis_taxvat_tab>
+            <general>
+                <soap_api_url><![CDATA[http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl]]></soap_api_url>
+                <active>0</active>
+                <default_group>1</default_group>
+                <viv_domestic_group>1</viv_domestic_group>
+                <viv_intra_union_group>1</viv_intra_union_group>
+                <viv_invalid_group>1</viv_invalid_group>
+            </general>
+            <failure>
+                <timeout>0</timeout>
+                <emptyfield>0</emptyfield>
+            </failure>
+            <email>
+                <can_send_mail>1</can_send_mail>
+                <receiver>general</receiver>
+                <ignore_email_domestic>0</ignore_email_domestic>
+                <template>taxvatvalidation_email_template</template>
+            </email>
+        </mageprofis_taxvat_tab>
+    </default>
 </config>
