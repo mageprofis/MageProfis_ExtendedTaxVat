@@ -178,6 +178,11 @@ class MageProfis_ExtendedTaxvat_Model_Observer
      */
     public function copyFieldsetCustomerAccountToQuote($event)
     {
+        // check does not need for already registered accounts
+        if(Mage::helper('customer')->isLoggedIn())
+        {
+            return $this;
+        }
         $group_id = Mage::getSingleton('core/session')->getVatCustomerGroupId();
         if(!is_null($group_id) && intval($group_id) != 0)
         {
