@@ -1,5 +1,22 @@
 <?php
-
+/**
+  * MageProfis_ExtendedTaxvat
+  *
+  * @category  MageProfis
+  * @package   MageProfis_ExtendedTaxvat
+  * @author    Mathis Klooss <mathis@mage-profis.de>, Christopher Boehm <christopher@mage-profis.de>
+  * @copyright 2015 Mage-Profis GmbH (http://www.mage-profis.de). All rights served.
+  */
+/**
+ * @method MageProfis_ExtendedTaxvat_Model_Taxvat setCountryCode(string $code)
+ * @method string getCountryCode()
+ * @method MageProfis_ExtendedTaxvat_Model_Taxvat setVatNo(string $code)
+ * @method string getVatNo()
+ * @method MageProfis_ExtendedTaxvat_Model_Taxvat setResult(string $code)
+ * @method string getResult()
+ * @method MageProfis_ExtendedTaxvat_Model_Taxvat setValid(boolean $code)
+ * @method int getValid()
+ */
 class MageProfis_ExtendedTaxvat_Model_Taxvat
 extends Mage_Core_Model_Abstract
 {
@@ -95,6 +112,21 @@ extends Mage_Core_Model_Abstract
     }
 
     /**
+     * set Taxvat Id with Country Code
+     * 
+     * @param string $vat
+     * @return MageProfis_ExtendedTaxvat_Model_Taxvat
+     */
+    public function setVat($vat)
+    {
+        $countryCode = substr($vat, 0, 2);
+        $taxvat = substr($vat, 2);
+        $this->setCountryCode($countryCode)
+                ->setVatNo($taxvat);
+        return $this;
+    }
+
+    /**
      * get Result as Array
      * 
      * @return array
@@ -147,6 +179,7 @@ extends Mage_Core_Model_Abstract
     }
 
     /**
+     * set CreatedAt
      * 
      * @return MageProfis_ExtendedTaxvat_Model_Taxvat
      */

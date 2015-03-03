@@ -1,5 +1,12 @@
 <?php
-
+/**
+  * MageProfis_ExtendedTaxvat
+  *
+  * @category  MageProfis
+  * @package   MageProfis_ExtendedTaxvat
+  * @author    Mathis Klooss <mathis@mage-profis.de>, Christopher Boehm <christopher@mage-profis.de>
+  * @copyright 2015 Mage-Profis GmbH (http://www.mage-profis.de). All rights served.
+  */
 class MageProfis_ExtendedTaxvat_Helper_Data
 extends Mage_Core_Helper_Abstract
 {
@@ -40,7 +47,7 @@ extends Mage_Core_Helper_Abstract
         }
         return Mage::getStoreConfigFlag(MageProfis_ExtendedTaxvat_Helper_Data::XML_CAN_SEND_MAIL);
     }
-    
+
     /**
      * get Customer Group for EU Member
      * 
@@ -98,7 +105,7 @@ extends Mage_Core_Helper_Abstract
     {
         return Mage::getStoreConfigFlag(self::XML_CAN_SEND_MAIL_DOMESTIC);
     }
-    
+
     /**
      * 
      * @return bool
@@ -130,7 +137,7 @@ extends Mage_Core_Helper_Abstract
         }
         return false;
     }
-    
+
     /**
      * clean up taxvat id
      * 

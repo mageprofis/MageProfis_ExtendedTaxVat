@@ -1,14 +1,22 @@
 <?php
-
+/**
+  * MageProfis_ExtendedTaxvat
+  *
+  * @category  MageProfis
+  * @package   MageProfis_ExtendedTaxvat
+  * @author    Mathis Klooss <mathis@mage-profis.de>, Christopher Boehm <christopher@mage-profis.de>
+  * @copyright 2015 Mage-Profis GmbH (http://www.mage-profis.de). All rights served.
+  */
 class MageProfis_ExtendedTaxvat_Model_Service
 {
 
     const XML_PATH_SOAPAPI_WSDL = 'mageprofis_taxvat_tab/general/soap_api_url';
-    
+
     protected $_taxVatModel = null;
     protected $_messageType = null;
 
     /**
+     * get Customer Group by TaxVat Id
      * 
      * @param type $taxVat
      * @param type $customer
@@ -141,6 +149,7 @@ class MageProfis_ExtendedTaxvat_Model_Service
     }
 
     /**
+     * get taxvat Model
      * 
      * @return MageProfis_ExtendedTaxvat_Model_Taxvat
      */
@@ -148,17 +157,21 @@ class MageProfis_ExtendedTaxvat_Model_Service
     {
         return $this->_taxVatModel;
     }
-    
+
     /**
+     * get Message Type
+     * 
      * @return string
      */
     public function getMessageType()
     {
         return $this->_messageType;
     }
-    
+
     /**
+     * get Message from model
      * 
+     * @return string
      */
     public function getMessage()
     {

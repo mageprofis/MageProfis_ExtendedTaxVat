@@ -1,5 +1,12 @@
 <?php
-
+/**
+  * MageProfis_ExtendedTaxvat
+  *
+  * @category  MageProfis
+  * @package   MageProfis_ExtendedTaxvat
+  * @author    Mathis Klooss <mathis@mage-profis.de>, Christopher Boehm <christopher@mage-profis.de>
+  * @copyright 2015 Mage-Profis GmbH (http://www.mage-profis.de). All rights served.
+  */
 class MageProfis_ExtendedTaxvat_Model_Observer
 {
     /**
@@ -10,6 +17,7 @@ class MageProfis_ExtendedTaxvat_Model_Observer
     public function setQuoteAndSessionInCheckout($event) {
         $helper = Mage::helper('extendedtaxvat');
         /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
+        // do not enable this when the magento api is enabled
         if(!$helper->isEnabled() || Mage::getStoreConfig('customer/create_account/auto_group_assign'))
         {
             return false;
@@ -118,6 +126,8 @@ class MageProfis_ExtendedTaxvat_Model_Observer
     }
 
     /**
+     * change customer group in active quotes
+     * 
      * @mageEvent customer_save_after
      * @param string $event
      */
@@ -194,8 +204,10 @@ class MageProfis_ExtendedTaxvat_Model_Observer
                     ->setGroupId($group_id);
         }
     }
-    
+
     /**
+     * clean up taxvat
+     * 
      * @see MageProfis_ExtendedTaxvat_Helper_Data::cleanTaxvat
      * @return string
      */

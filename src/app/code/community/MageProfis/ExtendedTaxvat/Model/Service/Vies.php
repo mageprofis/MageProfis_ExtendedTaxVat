@@ -1,11 +1,18 @@
 <?php
-
+/**
+  * MageProfis_ExtendedTaxvat
+  *
+  * @category  MageProfis
+  * @package   MageProfis_ExtendedTaxvat
+  * @author    Mathis Klooss <mathis@mage-profis.de>, Christopher Boehm <christopher@mage-profis.de>
+  * @copyright 2015 Mage-Profis GmbH (http://www.mage-profis.de). All rights served.
+  */
 class MageProfis_ExtendedTaxvat_Model_Service_Vies
 {
     protected $_vat_id = null;
     protected $_country_code = null;
     protected $_result_type = 'UNKNOWN';
-    
+
     const XML_PATH_SOAPAPI_WSDL = 'mageprofis_taxvat_tab/general/soap_api_url';
 
     protected $_knownTypes = array(
