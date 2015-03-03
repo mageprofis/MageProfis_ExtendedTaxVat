@@ -15,10 +15,10 @@ $entityTypeId     = $installer->getEntityTypeId('customer');
 $attributeSetId   = $installer->getDefaultAttributeSetId($entityTypeId);
 $attributeGroupId = $installer->getDefaultAttributeGroupId($entityTypeId, $attributeSetId);
 
-$installer->addAttribute('customer', 'validation_result', array(
-    'input'         => 'text',
-    'type'          => 'varchar',
-    'label'         => 'Ust.Id- Validation Result',
+$installer->addAttribute('customer', 'validation_result_text', array(
+    'input'         => 'textarea',
+    'type'          => 'text',
+    'label'         => 'Ust.Id- Validation Result Text',
     'visible'       => 1,
     'required'      => 0,
     'user_defined'  => 1,
@@ -28,11 +28,11 @@ $installer->addAttributeToGroup(
 	$entityTypeId,
 	$attributeSetId,
 	$attributeGroupId,
-	'validation_result',
+	'validation_result_text',
 	'999'
 );
 
-$attribute = Mage::getSingleton('eav/config')->getAttribute('customer', 'validation_result');
+$attribute = Mage::getSingleton('eav/config')->getAttribute('customer', 'validation_result_text');
 $attribute->setData('used_in_forms', array('adminhtml_customer'))
 	->setData('is_used_for_customer_segment', true)
 	->setData('is_system', 0)

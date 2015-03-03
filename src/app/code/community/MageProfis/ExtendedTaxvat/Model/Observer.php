@@ -108,6 +108,7 @@ class MageProfis_ExtendedTaxvat_Model_Observer
 
         if($service && $service->getTaxVatModel() && $result = $service->getTaxVatModel()->getResult()){
             $customer->setData('validation_result', $result);
+            $customer->setData('validation_result_text', $service->getTaxVatModel()->getResultAsText());
         }
 
         $customer->setShowTaxMessage(true);
