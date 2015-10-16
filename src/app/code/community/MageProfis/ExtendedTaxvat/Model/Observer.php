@@ -154,7 +154,7 @@ class MageProfis_ExtendedTaxvat_Model_Observer
                 ;
             }
         }
-        if($customer->getShowTaxMessage()){
+        if($customer->getShowTaxMessage() && !$customer->getHideTaxMessage()){
             $message = $customer->getTaxMessage();
             if($message)
             {
@@ -199,11 +199,12 @@ class MageProfis_ExtendedTaxvat_Model_Observer
             $group_id = (int) $service->getCustomerGroupIdByVatId($taxvat, $customer);
             if ($group_id != (int) $customer->getGroupId())
             {
-                $customer->setShowTaxMessage(false);
+                $customer->setHideTaxMessage(true);
                 $customer->setGroupId($group_id);
                 if ($group_id == $helper->getDefaultCustomerGroup())
                 {
                     $customer->setShowTaxMessage(true);
+                    $customer->setHideTaxMessage(false);
                 }
                 $customer->save();
                 if ($group_id == $helper->getDefaultCustomerGroup())
