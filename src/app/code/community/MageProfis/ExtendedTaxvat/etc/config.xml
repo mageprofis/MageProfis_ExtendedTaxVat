@@ -61,6 +61,14 @@
                     </extendedtaxvat>    
                 </observers>
             </customer_save_after>
+            <customer_login>
+                <observers>
+                    <extendedtaxvat>
+                        <class>extendedtaxvat/observer</class>
+                        <method>onCustomerLogin</method>
+                    </extendedtaxvat>    
+                </observers>
+            </customer_login>
             <core_copy_fieldset_customer_account_to_quote>
                 <observers>
                     <extendedtaxvat>

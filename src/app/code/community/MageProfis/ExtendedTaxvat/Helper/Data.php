@@ -21,7 +21,7 @@ extends Mage_Core_Helper_Abstract
     const XML_SHOP_COUNTRY = 'general/country/default';
     const XML_PATH_TIMEOUTHANDLING = 'mageprofis_taxvat_tab/failure/timeout';
     const XML_PATH_CLEARVATFIELD = 'mageprofis_taxvat_tab/failure/emptyfield';
-    
+
     const TYPE_DOMESTIC = 'domestic';
     const TYPE_UNION    = 'union';
 

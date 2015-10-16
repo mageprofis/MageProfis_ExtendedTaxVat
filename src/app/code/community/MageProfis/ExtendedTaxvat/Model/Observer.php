@@ -15,20 +15,19 @@ class MageProfis_ExtendedTaxvat_Model_Observer
      * @param Varien_Object $event
      */
     public function setQuoteAndSessionInCheckout($event) {
-        $helper = Mage::helper('extendedtaxvat');
-        /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
-        // do not enable this when the magento api is enabled
-        if(!$helper->isEnabled() || Mage::getStoreConfig('customer/create_account/auto_group_assign'))
+        if(!$this->isEnabled())
         {
             return false;
         }
+        $helper = Mage::helper('extendedtaxvat');
+        /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
         $controller = $event->getControllerAction();
         /* @var $controller Mage_Customer_AccountController */
         $billing = $controller->getRequest()->getParam('billing');
         $taxvat = (isset($billing['taxvat'])) ? trim($billing['taxvat']) : false;
         $group_id = null;
 
-        if(strlen($taxvat) > 4)
+        if($taxvat && strlen($taxvat) > 4)
         {
             $taxvat = $this->cleanTaxvat($taxvat);
             $billing['taxvat'] = $taxvat;
@@ -74,34 +73,30 @@ class MageProfis_ExtendedTaxvat_Model_Observer
      */
     public function onCustomerSaveBefore($event)
     {
-        $helper = Mage::helper('extendedtaxvat');
         // disable function if magento default is active
-        if(!$helper->isEnabled() || Mage::getStoreConfig('customer/create_account/auto_group_assign'))
+        if(!$this->isEnabled())
         {
             return;
         }
+        $helper = Mage::helper('extendedtaxvat');
+        /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
         $customer = $event->getCustomer();
         /* @var $customer Mage_Customer_Model_Customer */
         $service = Mage::getModel('extendedtaxvat/service');
         /* @var $service MageProfis_ExtendedTaxvat_Model_Service */
-        $addr = null;
-        foreach ($customer->getAddresses() as $address)
-        {
-            $addr = $address;
-        }
         $taxvat = $this->cleanTaxvat($customer->getTaxvat());
         $customer->setTaxvat($taxvat);
         if(is_null($customer->getTaxvat()) || strlen($customer->getTaxvat()) < 1)
         {
-            $groupId = Mage::helper('extendedtaxvat')->getDefaultCustomerGroup();
+            $groupId = $helper->getDefaultCustomerGroup();
             $customer->setGroupId($groupId);
         }
 
-        $groupId = $service->getCustomerGroupIdByVatId($taxvat, $addr);
+        $groupId = $service->getCustomerGroupIdByVatId($taxvat, $customer);
         // check on customer create the customer group, when it is "NOT LOGGED IN", we set the default group
         if($groupId == Mage_Customer_Model_Group::NOT_LOGGED_IN_ID)
         {
-            $groupId = Mage::helper('extendedtaxvat')->getDefaultCustomerGroup();
+            $groupId = $helper->getDefaultCustomerGroup();
         }
 
         $customer->setGroupId($groupId);
@@ -133,10 +128,9 @@ class MageProfis_ExtendedTaxvat_Model_Observer
      * @param string $event
      */
     public function onCustomerSaveAfter($event) {
-        $helper = Mage::helper('extendedtaxvat');
-         if(!$helper->isEnabled() || Mage::getStoreConfig('customer/create_account/auto_group_assign')){
-             return;
-         }
+        if(!$this->isEnabled()){
+            return;
+        }
         $customer = $event->getCustomer();
         /* @var $customer Mage_Customer_Model_Customer */
         Mage::getSingleton('core/session')->setVatCustomerGroupId($customer->getGroupId());
@@ -184,18 +178,55 @@ class MageProfis_ExtendedTaxvat_Model_Observer
     }
 
     /**
+     * 
+     * @mageEvent customer_login
+     * @return void
+     */
+    public function onCustomerLogin($event)
+    {
+        if(!$this->isEnabled()) {
+            return;
+        }
+        $customer = $event->getCustomer();
+        /* @var $customer Mage_Customer_Model_Customer */
+        $helper = Mage::helper('extendedtaxvat');
+        /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
+        $taxvat = $customer->getTaxvat();
+        if (strlen($taxvat) > 4)
+        {
+            $service = Mage::getModel('extendedtaxvat/service');
+            /* @var $service MageProfis_ExtendedTaxvat_Model_Service */
+            $group_id = (int) $service->getCustomerGroupIdByVatId($taxvat, $customer);
+            if ($group_id != (int) $customer->getGroupId())
+            {
+                $customer->setShowTaxMessage(false);
+                $customer->setGroupId($group_id);
+                if ($group_id == $helper->getDefaultCustomerGroup())
+                {
+                    $customer->setShowTaxMessage(true);
+                }
+                $customer->save();
+                Mage::app()->getResponse()
+                        ->setRedirect(Mage::helper('customer')->getEditUrl(), 301)
+                        ->sendResponse();
+                exit;
+            }
+        }
+    }
+
+    /**
      * @mageEvent core_copy_fieldset_customer_account_to_quote
      * @return void
      */
     public function copyFieldsetCustomerAccountToQuote($event)
     {
         // check does not need for already registered accounts
-        if(Mage::helper('customer')->isLoggedIn())
+        if (!$this->isEnabled() || Mage::helper('customer')->isLoggedIn())
         {
             return $this;
         }
         $group_id = Mage::getSingleton('core/session')->getVatCustomerGroupId();
-        if(!is_null($group_id) && intval($group_id) != 0)
+        if (!is_null($group_id) && intval($group_id) != 0)
         {
             $target = $event->getTarget();
             $target
@@ -212,9 +243,22 @@ class MageProfis_ExtendedTaxvat_Model_Observer
      * @see MageProfis_ExtendedTaxvat_Helper_Data::cleanTaxvat
      * @return string
      */
-    protected function cleanTaxvat($taxvat)
+    protected function cleanTaxvat ($taxvat)
     {
         return Mage::helper('extendedtaxvat')->cleanTaxvat($taxvat);
     }
 
+    /**
+     * do not enable this when the magento api is enabled
+     * 
+     * @return boolean
+     */
+    protected function isEnabled()
+    {
+        $helper = Mage::helper('extendedtaxvat');
+        if(!$helper->isEnabled() || Mage::getStoreConfigFlag('customer/create_account/auto_group_assign')){
+            return false;
+        }
+        return true;
+    }
 }
