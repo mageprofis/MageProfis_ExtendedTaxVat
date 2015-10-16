@@ -140,4 +140,16 @@
             </email>
         </mageprofis_taxvat_tab>
     </default>
+    <crontab>
+        <jobs>
+            <extendedtaxvat_removeoldentries>
+                <schedule>
+                    <cron_expr>0 5 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>extendedtaxvat/cron::removeOldEntries</model>
+                </run>
+            </extendedtaxvat_removeoldentries>
+        </jobs>
+    </crontab>
 </config>
