@@ -206,10 +206,13 @@ class MageProfis_ExtendedTaxvat_Model_Observer
                     $customer->setShowTaxMessage(true);
                 }
                 $customer->save();
-                Mage::app()->getResponse()
-                        ->setRedirect(Mage::helper('customer')->getEditUrl(), 301)
-                        ->sendResponse();
-                exit;
+                if ($group_id == $helper->getDefaultCustomerGroup())
+                {
+                    Mage::app()->getResponse()
+                            ->setRedirect(Mage::helper('customer')->getEditUrl(), 301)
+                            ->sendResponse();
+                    exit;
+                }
             }
         }
     }
