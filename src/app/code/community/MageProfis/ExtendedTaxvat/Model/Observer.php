@@ -63,7 +63,23 @@ class MageProfis_ExtendedTaxvat_Model_Observer
             ->getCustomerTaxClassId();
 
         Mage::getSingleton('core/session')->setVatCustomerGroupId($group_id);
-
+        // When error occured... json-error-message will emulated (like in OnepageController)
+        if (isset($service)) {
+            $message = $service->getMessage();
+            if ($message) {
+                foreach ($message['messages'] as $_message) {
+                    switch ($message['type']) {
+                        case 'error':
+                            $error = array(
+                                'error'=>1,
+                                'message' =>$_message
+                                );
+                            echo Mage::helper('core')->jsonEncode($error);
+                            exit;
+                    }
+                }
+            }
+        }
         return $this;
     }
 
