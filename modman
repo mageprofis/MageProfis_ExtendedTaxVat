@@ -1,3 +1,6 @@
 src/app/etc/modules/MageProfis_ExtendedTaxvat.xml                   app/etc/modules/MageProfis_ExtendedTaxvat.xml
+src/app/locale/de_DE/template/email/extendedtaxvat.html             app/locale/de_DE/template/email/extendedtaxvat.html
 src/app/locale/de_DE/MageProfis_ExtendedTaxVat.csv                  app/locale/de_DE/MageProfis_ExtendedTaxVat.csv
+src/app/locale/en_US/template/email/extendedtaxvat.html             app/locale/en_US/template/email/extendedtaxvat.html
+src/app/locale/en_US/MageProfis_ExtendedTaxVat.csv                  app/locale/en_US/MageProfis_ExtendedTaxVat.csv
 src/app/code/community/MageProfis/ExtendedTaxvat                    app/code/community/MageProfis/ExtendedTaxvat
