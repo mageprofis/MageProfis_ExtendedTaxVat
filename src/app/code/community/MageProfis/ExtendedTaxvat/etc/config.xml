@@ -41,16 +41,25 @@
                     <extendedtaxvat>
                         <type>singleton</type>
                         <class>extendedtaxvat/observer</class>
-                        <method>setQuoteAndSessionInCheckout</method>
+                        <method>onSaveBilling</method>
                     </extendedtaxvat>
                 </observers>
             </controller_action_predispatch_checkout_onepage_saveBilling>
+            <controller_action_predispatch_checkout_onepage_saveShipping>
+                <observers>
+                    <extendedtaxvat>
+                        <type>singleton</type>
+                        <class>extendedtaxvat/observer</class>
+                        <method>onSaveShipping</method>
+                    </extendedtaxvat>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_saveShipping>
             <customer_save_before>
                 <observers>
                     <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>onCustomerSaveBefore</method>
-                    </extendedtaxvat>    
+                    </extendedtaxvat>
                 </observers>
             </customer_save_before>
             <customer_save_after>
@@ -58,7 +67,7 @@
                     <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>onCustomerSaveAfter</method>
-                    </extendedtaxvat>    
+                    </extendedtaxvat>
                 </observers>
             </customer_save_after>
             <customer_login>
@@ -66,7 +75,7 @@
                     <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>onCustomerLogin</method>
-                    </extendedtaxvat>    
+                    </extendedtaxvat>
                 </observers>
             </customer_login>
             <core_copy_fieldset_customer_account_to_quote>
@@ -74,7 +83,7 @@
                     <extendedtaxvat>
                         <class>extendedtaxvat/observer</class>
                         <method>copyFieldsetCustomerAccountToQuote</method>
-                    </extendedtaxvat>    
+                    </extendedtaxvat>
                 </observers>
             </core_copy_fieldset_customer_account_to_quote>
         </events>
