@@ -54,6 +54,15 @@
                     </extendedtaxvat>
                 </observers>
             </controller_action_predispatch_checkout_onepage_saveShipping>
+            <onecheckout_setaddress_before>
+                <observers>
+                    <extendedtaxvat>
+                        <type>singleton</type>
+                        <class>extendedtaxvat/observer</class>
+                        <method>onOneCheckoutSetAddress</method>
+                    </extendedtaxvat>
+                </observers>
+            </onecheckout_setaddress_before>
             <customer_save_before>
                 <observers>
                     <extendedtaxvat>

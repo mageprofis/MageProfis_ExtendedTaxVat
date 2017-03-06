@@ -27,7 +27,84 @@ class MageProfis_ExtendedTaxvat_Model_Observer
         $this->setQuoteAndSessionInCheckout($event, "billing");
     }
 
-    /**
+    public function onOneCheckoutSetAddress($event)
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+        $type = 'billing';
+        $helper = Mage::helper('extendedtaxvat');
+        /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
+        $controller = $event->getControllerAction();
+        /* @var $controller Mage_Customer_AccountController */
+        $address = Mage::app()->getRequest()->getPost($type);
+        $taxvat = (isset($address['taxvat'])) ? trim($address['taxvat']) : false;
+        $group_id = Mage_Customer_Model_Group::NOT_LOGGED_IN_ID;
+        
+        if ($taxvat && strlen($taxvat) > 4) {
+            $taxvat = $this->cleanTaxvat($taxvat);
+            $address['taxvat'] = $taxvat;
+            $address['vat_id'] = $taxvat;
+            Mage::app()->getRequest()->setPost($type, $address);
+
+            $customer = new Varien_Object();
+            $customer->setData($address);
+
+            $service = Mage::getModel('extendedtaxvat/service');
+            /* @var $service MageProfis_ExtendedTaxvat_Model_Service */
+            $group_id = $service->getCustomerGroupIdByVatId($taxvat, $customer);
+            if ($helper->getClearVatField() && (!$service || !$service->getTaxVatModel() || !$service->getTaxVatModel()->isValid())) {
+                $address['taxvat'] = '';
+                $address['vat_id'] = '';
+                Mage::app()->getRequest()->setParam($type, $address);
+            }
+        } elseif (Mage::helper('customer')->isLoggedIn()) {
+            $group_id = Mage::getSingleton('customer/session')->getCustomerGroupId();
+        }
+
+        // set group in quote and customer session!
+        Mage::getSingleton('customer/session')
+            ->setCustomerGroupId($group_id);
+        Mage::getSingleton('customer/session')
+            ->getCustomer()
+            ->setGroupId($group_id);
+
+        Mage::getSingleton('checkout/session')->getQuote()
+            ->setCustomerGroupId($group_id)
+            ->setTotalsCollectedFlag(false)
+            ->getCustomerTaxClassId();
+
+        Mage::getSingleton('core/session')->setVatCustomerGroupId($group_id);
+        
+        $errors = array();
+        if (isset($service)) {
+            $message = $service->getMessage();
+            if ($message) {
+                foreach ($message['messages'] as $_message) {
+                    switch ($message['type']) {
+                        case 'error':
+                            $errors[] = $_message;
+                    }
+                }
+            }
+            
+            if($service->isChecked())
+            {
+                $object = $event->getObject();
+                $result = $object->getResult();
+                $result['taxvat'] = array(
+                    'is_valid'      => $service->isValid(),
+                    'error'         => $errors ? true : false,
+                    'error_message' => implode(', ', $errors),
+                );
+                $object->setResult($result);
+            }
+        }
+
+        return $this;
+    }
+
+        /**
      *
      * @mageEvent controller_action_predispatch_checkout_onepage_saveBilling
      * @param Varien_Object $event

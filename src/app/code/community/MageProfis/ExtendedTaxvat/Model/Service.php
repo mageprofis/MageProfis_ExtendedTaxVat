@@ -14,6 +14,8 @@ class MageProfis_ExtendedTaxvat_Model_Service
 
     protected $_taxVatModel = null;
     protected $_messageType = null;
+    protected $_isValid     = false;
+    protected $_isChecked   = false;
 
     /**
      * get Customer Group by TaxVat Id
@@ -129,6 +131,9 @@ class MageProfis_ExtendedTaxvat_Model_Service
         } else {
             $groupId = Mage::getSingleton('checkout/session')->getCustomerGroupId();
         }
+        
+        $this->_isValid = $isValid;
+        $this->_isChecked = true;
         return $groupId;
     }
 
@@ -178,4 +183,23 @@ class MageProfis_ExtendedTaxvat_Model_Service
         return $this->_message;
     }
 
+    /**
+     * is vat id valid
+     * 
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return $this->_isValid;
+    }
+    
+    /**
+     * vat id was checked
+     * 
+     * @return boolean
+     */
+    public function isChecked()
+    {
+        return $this->_isChecked;
+    }
 }
