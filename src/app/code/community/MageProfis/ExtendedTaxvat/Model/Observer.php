@@ -190,6 +190,10 @@ class MageProfis_ExtendedTaxvat_Model_Observer
         /* @var $helper MageProfis_ExtendedTaxvat_Helper_Data */
         $customer = $event->getCustomer();
         /* @var $customer Mage_Customer_Model_Customer */
+        if( (int) $customer->getDisableAutoGroupChange() == 1)
+        {
+            return;
+        }
         $service = Mage::getModel('extendedtaxvat/service');
         /* @var $service MageProfis_ExtendedTaxvat_Model_Service */
         $taxvat = $this->cleanTaxvat($customer->getTaxvat());
@@ -245,7 +249,8 @@ class MageProfis_ExtendedTaxvat_Model_Observer
             ->addFieldToFilter('store_id', array('neq' => 0))
             ->addFieldToFilter('is_active', 1)
             ->addFieldToFilter('converted_at', array('null' => true))
-            ->addFieldToFilter('customer_id', (int) $customer->getId());
+            ->addFieldToFilter('customer_id', (int) $customer->getId())
+            ->addFieldToFilter('customer_tax_class_id', array('neq' => (int)$customer->getGroupId()));
 
         foreach ($collection as $_quote) {
             /* @var $_quote Mage_Sales_Model_Quote */
