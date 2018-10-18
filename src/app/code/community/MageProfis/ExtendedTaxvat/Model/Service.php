@@ -14,6 +14,7 @@ class MageProfis_ExtendedTaxvat_Model_Service
 
     protected $_taxVatModel = null;
     protected $_messageType = null;
+    protected $_message     = null;
     protected $_isValid     = false;
     protected $_isChecked   = false;
 
