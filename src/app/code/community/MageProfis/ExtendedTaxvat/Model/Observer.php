@@ -17,7 +17,7 @@ class MageProfis_ExtendedTaxvat_Model_Observer
     {
         $storeId = Mage::app()->getStore()->getStoreId();
         $taxBasedOn = Mage::getStoreConfig(self::XML_SYSTEM_TAX_BASES_ON, $storeId);
-        if ($taxBasedOn == "shipping") {
+        if ($taxBasedOn == 'shipping') {
             $this->setQuoteAndSessionInCheckout($event, "shipping");
         }
     }
@@ -120,6 +120,20 @@ class MageProfis_ExtendedTaxvat_Model_Observer
         /* @var $controller Mage_Customer_AccountController */
         $address = $controller->getRequest()->getPost($type);
         $taxvat = (isset($address['taxvat'])) ? trim($address['taxvat']) : false;
+        if ($type == 'shipping' && !$taxvat)
+        {
+            // if same do not do anything on shipping
+            if (isset($address['same_as_billing']) && (int)$address['same_as_billing'] == 1)
+            {
+                return $this;
+            }
+            // otherwise load taxvat from billing
+            $address['taxvat'] = Mage::getSingleton('checkout/session')
+                    ->getQuote()
+                    ->getBillingAddress()
+                    ->getVatId();
+            $taxvat = (isset($address['taxvat'])) ? trim($address['taxvat']) : false;
+        }
         $group_id = Mage_Customer_Model_Group::NOT_LOGGED_IN_ID;
 
         if ($taxvat && strlen($taxvat) > 4) {
