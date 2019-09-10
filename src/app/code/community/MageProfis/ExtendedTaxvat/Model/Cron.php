@@ -52,7 +52,7 @@ extends Mage_Core_Model_Abstract
      */
     protected function getOldDate()
     {
-        return date('Y-m-d H:i:s', strtotime('-4 month'));
+        return date('Y-m-d H:i:s', strtotime('-4 weeks'));
     }
 
     /**
