@@ -95,10 +95,25 @@ class MageProfis_ExtendedTaxvat_Model_Service_Vies
             /* @var $e SoapFault */
             $result = array();
             $faultString = (string) $e->faultstring;
-            $matches = array();
-            preg_match('/\{ \'([A-Z_]*)\' \}/', $faultString, $matches);
-            $_messageType = isset($matches[1]) ? trim($matches[1]) : 'UNKNOWN';
-            $_messageType = (in_array($_messageType, $this->_knownTypes)) ? $_messageType : 'UNKNOWN';
+            $_messageType = null;
+            switch($faultString)
+            {
+                case 'MS_UNAVAILABLE':
+                case 'SERVICE_UNAVAILABLE':
+                case 'SERVER_BUSY':
+                case 'TIMEOUT':
+                case 'INVALID_INPUT':
+                    $_messageType = $faultString;
+            }
+
+            if (is_null($_messageType))
+            {
+                $matches = array();
+                preg_match('/\{ \'([A-Z_]*)\' \}/', $faultString, $matches);
+
+                $_messageType = isset($matches[1]) ? trim($matches[1]) : 'UNKNOWN';
+                $_messageType = (in_array($_messageType, $this->_knownTypes)) ? $_messageType : 'UNKNOWN';
+            }
         } catch (Exception $e) {
             $_messageType = 'TIMEOUT';
             $result = array();
